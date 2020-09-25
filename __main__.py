@@ -1,30 +1,33 @@
-import yaml
+# keyboard layout, can change based on your keyboard
+keyboard = [
+    "qwertyuiop",
+    "asdfghjkl",
+    "zxcvbnm"
+]
 
-with open("typo-map.yaml", 'r') as f: typo_map = yaml.safe_load(f)
+def possible_typos(letter):
+    # positions of nearby letters
+    # in format (y offset, x offsets)
+    # e.g [-1, 0, 1] is y offset -1 (line above)
+    #     0 means same position and 1 means to the right
+    indexes = [[-1, 0, 1], [0, -1, 1], [1, -1, 0]]
 
-a = typo_map['a']
-b = typo_map['b']
-c = typo_map['c']
-d = typo_map['d']
-e = typo_map['e']
-f = typo_map['f']
-g = typo_map['g']
-h = typo_map['h']
-i = typo_map['i']
-j = typo_map['j']
-k = typo_map['k']
-l = typo_map['l']
-m = typo_map['m']
-n = typo_map['m']
-o = typo_map['o']
-p = typo_map['p']
-q = typo_map['q']
-r = typo_map['r']
-s = typo_map['s']
-t = typo_map['t']
-u = typo_map['u']
-v = typo_map['v']
-w = typo_map['w']
-x = typo_map['x']
-y = typo_map['y']
-z = typo_map['z']
+    # find row (line_index) and column (p)
+    line_index = 0
+    p = 0
+    for x, k in enumerate(keyboard):
+        if k.find(letter) != -1:
+            line_index = x
+            p = k.find(letter)
+
+    # go through each possible typo line
+    typos = []
+    for i in indexes:
+        # offset row by current Y
+        pos = line_index + i[0]
+        # if it's outside the keyboard skip
+        if pos < 0 or pos >= len(keyboard): continue
+        # go through each X offset and add it to the list
+        for index in i[1:]: typos.append(keyboard[pos][p + index])
+
+    return typos
