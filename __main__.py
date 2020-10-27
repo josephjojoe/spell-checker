@@ -1,3 +1,5 @@
+import itertools
+
 # keyboard layout, can change based on your keyboard
 keyboard = [
     "qwertyuiop",
@@ -28,6 +30,40 @@ def possible_typos(letter):
         # if it's outside the keyboard skip
         if pos < 0 or pos >= len(keyboard): continue
         # go through each X offset and add it to the list
-        for index in i[1:]: typos.append(keyboard[pos][p + index])
+        for index in i[1:]:
+            if p+index < 0 or p+index >= len(keyboard[pos]): continue
+            typos.append(keyboard[pos][p + index])
+
+    # appends the letter itself to typo list
+    typos.append(letter)
 
     return typos
+
+def word_possibilities(word):
+    word = list(word)
+    wordLength = len(word)
+    typoList = [possible_typos(c) for c in word]
+
+    letterPermutations = list(itertools.product(*typoList))
+    # joins together chars in nested lists, credits to @orifuwu
+    letterPermutations = [''.join(l) for l in letterPermutations]
+
+    return letterPermutations
+
+def main():
+    word = input("Word to spellcheck: ")
+
+    # all possible permutations of letters
+    permutationsList = word_possibilities(word)
+
+    with open("words.txt") as dictionary_file:
+        english_words = dictionary_file.read().split()
+        # list holds all possible words that the typo could actually be
+        wordList = []
+        for i in range(0, len(permutationsList)):
+            if permutationsList[i] in english_words:
+                wordList.append(permutationsList[i])
+        print(wordList)
+
+if __name__ == '__main__':
+    main()
