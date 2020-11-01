@@ -1,2 +1,2 @@
 # spell-checker
-Spell checker written in Python using YAML.
+Spell checker written in Python.
